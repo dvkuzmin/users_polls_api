@@ -14,9 +14,6 @@ class AnonymousUserView(APIView):
 		name = request.data.get("user")
 		user = AnonymousUser(name=name["name"])
 		user.save()
-		# serializer = AnonymousUserSerializer(data=name)
-		# if serializer.is_valid(raise_exception=True):
-		# 	user_saved = serializer.save()
 		return Response({"success": f"AnonymousUser {user.name} created"})
 
 class PollView(APIView):
@@ -37,6 +34,7 @@ class AnswerView(APIView):
 		answer = request.data.get('answer')
 		question_type = int(answer["question_id"])
 		question = Question.objects.get(pk=question_type)
+
 		if question.type_of_question == "text_answer":
 			name = AnonymousUser.objects.get(id=int(answer["name_id"]))
 			question = Question.objects.get(pk=int(answer["question_id"]))
@@ -44,9 +42,7 @@ class AnswerView(APIView):
 			poll = Poll.objects.get(pk=int(answer["poll_id"]))
 			answer = Answer(name=name, question=question, own_text=own_text, poll=poll)
 			answer.save()
-			# serializer = OwnAnswerSerializer(data=answer)
-			# if serializer.is_valid(raise_exception=True):
-			# 	answer_saved = serializer.save()
+
 		elif question.type_of_question == "one_choice_answer":
 			name = AnonymousUser.objects.get(pk=int(answer["name_id"]))
 			question = Question.objects.get(pk=int(answer["question_id"]))
@@ -54,9 +50,7 @@ class AnswerView(APIView):
 			poll = Poll.objects.get(pk=int(answer["poll_id"]))
 			answer = Answer(name=name, question=question, one_choice=one_choice, poll=poll)
 			answer.save()
-			# serializer = OneChoiceSerializer(data=answer)
-			# if serializer.is_valid(raise_exception=True):
-			# 	answer_saved = serializer.save()
+
 		elif question.type_of_question == "several_choice_answer":
 			name = AnonymousUser.objects.get(pk=int(answer["name_id"]))
 			question = Question.objects.get(pk=int(answer["question_id"]))
