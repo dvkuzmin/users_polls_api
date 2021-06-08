@@ -4,8 +4,7 @@ from rest_framework.views import APIView
 from .models import Poll, Question, Choice, Answer, AnonymousUser
 from .serializer import (
 	PollSerializer, QuestionSerializer, 
-	OwnAnswerSerializer, OneChoiceSerializer,
-	SeveralChoiceSerializer, GetAnswersSerializer,
+	OwnAnswerSerializer, OneChoiceSerializer, GetAnswersSerializer,
 	AnonymousUserSerializer,
 )
 
@@ -19,6 +18,7 @@ class AnonymousUserView(APIView):
 class PollView(APIView):
 	def get(self, request):
 		polls = Poll.objects.all()
+		polls = filter(Poll.end_date_not_become, polls)
 		serializer = PollSerializer(polls, many=True)
 		return Response({"polls": serializer.data})
 
@@ -41,7 +41,8 @@ class AnswerView(APIView):
 			own_text = str(answer["own_text"])
 			poll = Poll.objects.get(pk=int(answer["poll_id"]))
 			answer = Answer(name=name, question=question, own_text=own_text, poll=poll)
-			answer.save()
+			if not Answer.objects.filter(name=name, question=question):
+				answer.save()
 
 		elif question.type_of_question == "one_choice_answer":
 			name = AnonymousUser.objects.get(pk=int(answer["name_id"]))
@@ -49,7 +50,8 @@ class AnswerView(APIView):
 			one_choice = Choice.objects.get(pk=int(answer["one_choice_id"]))
 			poll = Poll.objects.get(pk=int(answer["poll_id"]))
 			answer = Answer(name=name, question=question, one_choice=one_choice, poll=poll)
-			answer.save()
+			if not Answer.objects.filter(name=name, question=question):
+				answer.save()
 
 		elif question.type_of_question == "several_choice_answer":
 			name = AnonymousUser.objects.get(pk=int(answer["name_id"]))
@@ -57,7 +59,8 @@ class AnswerView(APIView):
 			poll = Poll.objects.get(pk=int(answer["poll_id"]))
 			several_choice = list(answer["several_choice"])
 			answer = Answer(name=name, question=question, poll=poll)
-			answer.save()
+			if not Answer.objects.filter(name=name, question=question):
+				answer.save()
 			for i in several_choice:
 				answer.several_choice.add(Choice.objects.get(pk=i))
 			answer.save()

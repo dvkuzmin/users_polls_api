@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class AnonymousUser(models.Model):
 	name = models.CharField(max_length=200)
@@ -14,6 +15,11 @@ class Poll(models.Model):
 
 	def __str__(self):
 		return self.name
+
+	def end_date_not_become(self):
+		if end_date > timezone.now():
+			return True
+
 
 QUESTION_TYPES = (
 	('text_answer', 'Ответ текстом'),
