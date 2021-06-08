@@ -4,8 +4,7 @@ from rest_framework.views import APIView
 from .models import Poll, Question, Choice, Answer, AnonymousUser
 from .serializer import (
 	PollSerializer, QuestionSerializer, 
-	OwnAnswerSerializer, OneChoiceSerializer, GetAnswersSerializer,
-	AnonymousUserSerializer,
+	GetAnswersSerializer,
 )
 
 class AnonymousUserView(APIView):
