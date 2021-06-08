@@ -43,13 +43,13 @@ class OneChoiceSerializer(serializers.Serializer):
 		return Answer.objects.create(**validated_data)
 
 
-class SeveralChoiceSerializer(serializers.Serializer):
-	name_id = serializers.IntegerField()
-	question_id = serializers.IntegerField()
-	poll_id = serializers.IntegerField()
+# class SeveralChoiceSerializer(serializers.Serializer):
+# 	name_id = serializers.IntegerField()
+# 	question_id = serializers.IntegerField()
+# 	poll_id = serializers.IntegerField()
 	
-	def create(self, validated_data):
-		return Answer.objects.create(**validated_data)
+# 	def create(self, validated_data):
+# 		return Answer.objects.create(**validated_data)
 
 class GetAnswersSerializer(serializers.ModelSerializer):
 	class Meta:
